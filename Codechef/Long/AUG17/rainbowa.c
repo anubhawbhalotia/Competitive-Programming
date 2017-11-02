@@ -1,0 +1,46 @@
+    #include<stdio.h>
+    #include<math.h>
+    int main()
+    {
+    	int t,n,i,x,s;
+    	scanf("%d",&t);
+    	while(t--)
+    	{
+    		scanf("%d",&n);
+    		int a[n];
+    		for(i=0;i<n;i++)
+    			scanf("%d",&a[i]);
+    		x=1;
+    		if((n%2)==0)
+    			s=n/2;
+    		else
+    			s=(n/2)+1;
+    		for(i=0;i<s;i++)
+    		{
+    			if(a[i]==a[n-i-1]) 
+    			{
+    				if(a[i]==x)
+    					continue;
+    				else
+    				{
+    					if(a[i]==(x+1))
+    					{
+    						x++;
+    						continue;
+    					}
+    					else
+    					{
+    						break;
+    					}
+    				}
+    			}
+    			else
+    				break;
+    		}
+    		//printf("x=%d\n",x);
+    		if(x==7)
+    			printf("yes\n");
+    		else
+    			printf("no\n");
+    	}
+    } 
