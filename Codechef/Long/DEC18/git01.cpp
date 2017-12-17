@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int t,n,m,j,i,a,e,d,b;
+	cin>>t;
+	while(t--)
+	{
+		a=0;
+		e=0;
+		d=0;
+		b=0;
+		cin>>n>>m;
+		char c[n][m];
+		for(i=0;i<n;i++)
+		{
+			for(j=0;j<m;j++)
+			{
+				cin>>c[i][j];
+				if(i%2==0)
+				{
+					if(j%2==0)
+					{
+						if(c[i][j]=='R')
+						{
+							a++;	
+						}
+						else
+						{
+							b++;
+						}
+					}
+					else
+					{
+						if(c[i][j]=='R')
+						{
+							d++;
+						}
+						else
+						{
+							e++;
+						}
+					}
+				}
+				else
+				{
+					if(j%2==0)
+					{
+						if(c[i][j]=='R')
+						{
+							d++;
+						}
+						else
+						{
+							e++;
+						}
+					}
+					else
+					{
+						if(c[i][j]=='R')
+						{
+							a++;
+						}
+						else
+						{
+							b++;
+						}
+					}
+				}
+			}
+		}
+		a*=5;
+		d*=5;
+		b*=3;
+		e*=3;
+		if((b+d)<(a+e))
+		{
+			cout<<b+d<<endl;
+		}
+		else
+		{
+			cout<<a+e<<endl;
+		}
+	}
+}
+
+		
