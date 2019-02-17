@@ -44,11 +44,6 @@ int main()
 {
 	cin>>s;
 	int start = 0, end = s.length()-1, flag = 1;
-	if(s.length()<=3)
-	{
-		cout<<"Impossible"<<endl;
-		return 0;
-	}
 	if(isPalin(start,end))
 	{
 		flag = ((end-start+1) % 2 == 1) ? 2 : flag;
@@ -67,7 +62,7 @@ int main()
 			return 0;
 		}
 	}
-	end = (s.length() -2)/2;
+	end = ((int)s.length() -2)/2;
 	while(start<end)
 	{
 		if(isPalin(start, end))
