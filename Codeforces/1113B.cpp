@@ -41,7 +41,7 @@ int main()
 	sort(all(v));
 	fre(i,n-1,0)
 	{
-		f(j,2,v[i]-1)
+		fe(j,1,v[i])
 		{
 			d=0;
 			if(v[i]%j==0)
