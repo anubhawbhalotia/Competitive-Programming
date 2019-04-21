@@ -59,14 +59,6 @@ void update(long tree[], long pref[], long node, long l, long r, long index, lon
 	pref[node] = max(pref[node*2+1],(tree[node*2+1] + pref[node*2+2]));
 	pref[node] = max(pref[node], tree[node]);
 }
-void showTreePref(long tree[], long pref[], long end)
-{
-	end = 15;
-	f(i,0,end)
-		cout<<"tree["<<i<<"]="<<tree[i]<<endl;
-	f(i,0,end)
-		cout<<"pref["<<i<<"]="<<pref[i]<<endl;
-}
 int main()
 {
 	int t;
@@ -99,12 +91,7 @@ int main()
 			}
 			h = max(h,a[i]);
 		}
-		// f(i,0,n)
-		// 	cout<<"g["<<i<<"]="<<g[i]<<" ";
-		// cout<<endl;
 		build(g, tree, pref, 0, 0, n-1);
-		// showTreePref(tree, pref, 2*n);
-		//cout<<"pref"<<0<<" "<<pref[0]<<endl;
 		m = pref[0];
 		f(i,0,n-1)
 		{
@@ -116,8 +103,6 @@ int main()
 			}
 			if(!d[a[i]].empty())
 				update(tree, pref, 0, 0, n-1, *(d[a[i]].begin()), -1 * s);
-			// showTreePref(tree, pref, 2*n);
-			//cout<<"pref"<<i+1<<" "<<pref[0]<<endl;
 			m = max(m, pref[0]);
 		}
 		cout<<"Case #"<<k<<": "<<m<<endl;
