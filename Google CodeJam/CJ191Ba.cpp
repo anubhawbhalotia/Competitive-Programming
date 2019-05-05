@@ -14,6 +14,7 @@ using namespace std;
 #define fr(i,s,n) for(long i=s;i>n;i--)
 #define fre(i,s,n) for(long i=s;i>=n;i--)
 #define mod 998244353
+#define all(v) v.begin(),v.end()
 //Anubhaw Bhalotia https://github.com/anubhawbhalotia
 typedef vector<int> vi;
 typedef vector<long> vl;
@@ -27,6 +28,30 @@ typedef set<ll> sll;
 typedef multiset<int> msi;
 typedef multiset<long> msl;
 typedef multiset<ll> msll;
+long lwr_bnd(vl a, long val, long start, long end)
+{
+	if(val > a[end])
+		return end + 1;
+	if(val <= a[start])
+		return start;
+	long mid = (start + end) / 2;
+	if(a[mid] < val)
+		return lwr_bnd(a, val, mid+1, end);
+	else
+		return lwr_bnd(a, val, start, mid);
+}
+long upr_bnd(vl a, long val, long start, long end)
+{
+	if(val >= a[end])
+		return end + 1;
+	if(val < a[start])
+		return start;
+	long mid = (start + end) / 2;
+	if(a[mid] <= val)
+		return upr_bnd(a, val, mid+1,  end);
+	else
+		return upr_bnd(a, val, start, mid);
+}
 int main()
 {
 	int t;
@@ -35,126 +60,82 @@ int main()
 	{
 		long np,q;
 		cin>>np>>q;
-		long x[np], y[np];
-		char d[np];
-		long ans[1001][1001] = {};
-		long my = 0, mx = 0;
-		set <long> one,  two;
-		long rowMap[1001] = {}, rowUnmap[100001] = {};
-		long colMap[1001] = {}, colUnmap[100001] = {};
+		long x, y, rowMap[1001] = {}, colMap[1001] = {};
+		char d;
+		sl one, two;
+		vl n,s,e,w;
 		f(i,0,np)
 		{
-			cin>>x[i]>>y[i]>>d[i];
-			two.insert(x[i]);
-			one.insert(y[i]);
+			cin>>x>>y>>d;
+			two.insert(x);	//Column
+			one.insert(y);	//Rows
+			switch(d)
+			{
+				case 'N':
+					n.pb(y);
+					break;
+				case 'S':
+					s.pb(y);
+					break;
+				case 'E':
+					e.pb(x);
+					break;
+				case 'W':
+					w.pb(x);
+			}
 		}
-		one.insert(0);
-		two.insert(0);
+		sort(all(n));
+		sort(all(s));
+		sort(all(e));
+		sort(all(w));
+		one.insert(0);	//Rows
+		two.insert(0);	//Cols
 		one.insert(q);
 		two.insert(q);
-		int p = 0;
-		long last;
-		for(set < long > :: iterator it = one.begin();
-		 it !=one.end(); it++)  	//row
+		int p = 0, pp = 0;
+		long last = -1;
+		for(sl :: iterator it = one.begin(); it !=one.end(); it++)  	//row
 		{
-			if(it == one.begin())
-			{
-				last = *it;
-				rowMap[0] = *it;
-				rowUnmap[*it] = 0;
-				p++;
-			}
-			else
-			{
-				if(*it == last)
-					continue;
-				if(*it == last + 1)
-				{
-					rowMap[p] = *it;
-					rowUnmap[*it] = p;
-					last = *it;
-					p++;
-				}
-				else
-				{
-					rowMap[p] = last + 1;
-					rowUnmap[last + 1] = p;
-					p++;
-					rowMap[p] = *it;
-					rowUnmap[*it] = p;
-					last = *it;
-					p++;
- 				}
-			}
+			if(*it != last + 1)
+				rowMap[p++] = last + 1;
+			rowMap[p++] = *it;
+			last = *it;
 		}
-		int pp = 0;
-		for(set < long > :: iterator it = two.begin();
-		 it !=two.end(); it++)		//col
+		last = -1;
+		for(sl :: iterator it = two.begin(); it !=two.end(); it++)		//col
 		{
-			if(it == two.begin())
-			{
-				last = *it;
-				colMap[0] = *it;
-				colUnmap[*it] = 0;
-				pp++;
-			}
-			else
-			{
-				if(*it == last)
-					continue;
-				if(*it == last + 1)
-				{
-					colMap[pp] = *it;
-					colUnmap[*it] = pp;
-					last = *it;
-					pp++;
-				}
-				else
-				{
-					colMap[pp] = last + 1;
-					colUnmap[last + 1] = pp;
-					pp++;
-					colMap[pp] = *it;
-					colUnmap[*it] = pp;
-					last = *it;
-					pp++;
- 				}
-			}
+			if(*it != last + 1)
+				colMap[pp++] = last + 1;
+			colMap[pp++] = *it;
+			last = *it;
 		}
-		f(j,0,p) //x
+		int my = 0, mx = 0, ans, maxAns = 0;
+		f(j,0,p)
 		{
-			f(i,0,pp) //y
+			ans = 0;
+			if(!n.empty())
+				ans += lwr_bnd(n, rowMap[j], 0, n.size() - 1);
+			if(!s.empty())
+		 		ans += s.size() - upr_bnd(s, rowMap[j], 0, s.size() - 1);
+		 	if(ans > maxAns)
+		 	{
+		 		maxAns = ans;
+		 		my = j;
+		 	}
+		}
+		maxAns = 0;
+		f(j,0,pp)
+		{
+			ans = 0;
+			if(!e.empty())
+				ans += lwr_bnd(e, colMap[j], 0,  e.size() - 1);
+			if(!w.empty())
+				ans += w.size() - upr_bnd(w, colMap[j], 0, w.size() - 1);
+			if(ans > maxAns)
 			{
-				f(k,0,np)
-				{
-					// cout<<d[k]<<endl;
-					switch(d[k])
-					{
-						case 'N':
-							if(j > rowUnmap[y[k]])
-								ans[j][i]++;
-							break;
-						case 'S':
-							if(j < rowUnmap[y[k]])
-								ans[j][i]++;
-							break;
-						case 'E':
-							if(i > colUnmap[x[k]])
-								ans[j][i]++;
-							break;
-						case 'W':
-							if(i < colUnmap[x[k]])
-								ans[j][i]++;
-							break;
-					}
-				}
-				if(ans[j][i] > ans[my][mx])
-				{
-					mx = i;
-					my = j;
-				}
+				maxAns = ans;
+	 			mx = j;
 			}
-
 		}
 		cout<<"Case #"<<z<<": "<<colMap[mx]<<" "<<rowMap[my]<<endl;
 	}	
