@@ -1,9 +1,9 @@
 class Solution {
 public:
-    vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
         set <pair <int, pair < int,int > > > s;
         set <pair <int, int> > c;
-        vector<pair<int, int>> ans;
+        vector<vector<int>> ans;
         for(int i=0;i!=buildings.size();i++)
         {
             int l=buildings[i][0];
@@ -31,17 +31,22 @@ public:
                 i++;
             }
             set <pair <int, int> > :: reverse_iterator last = c.rbegin();
-            cout<<it->first<<" "<<(it->second).first<<" "<<(it->second).second<<endl;
             if(last == c.rend())
             {
-                ans.push_back(make_pair(it->first, 0));
+                vector <int> t;
+                t.push_back(it->first);
+                t.push_back(0);
+                ans.push_back(t);
                 prev=0;
                 it=i;
                 continue;
             }
             if(buildings[last->second][2] != prev)
             {
-                ans.push_back(make_pair(it->first, last->first));
+                vector <int> t;
+                t.push_back(it->first);
+                t.push_back(last->first);
+                ans.push_back(t);
                 prev=buildings[last->second][2];
             }
             it=i;
