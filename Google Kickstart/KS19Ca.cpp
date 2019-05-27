@@ -28,12 +28,24 @@ using indexed_set = tree<T, null_type, less<T>,
 #define ub upper_bound
 #define beg(x) x.begin()
 #define en(x) x.end()
-#define all(v) beg(v), en(v)
+#define all(v) v.begin(), v.end()
 #define f(i,s,n) for(int i=s;i<n;i++)
 #define fe(i,s,n) for(int i=s;i<=n;i++)
 #define fr(i,s,n) for(int i=s;i>n;i--)
 #define fre(i,s,n) for(int i=s;i>=n;i--)
 const int MOD = 998244353;
+template <typename T,typename U, typename V,typename W>
+auto operator+=(const pair<T,U> & l, pair<V,W> & r) 
+	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)>                
+{                                                                                  
+    return {l.first+r.first,l.second+r.second};                                    
+} 
+template <typename T,typename U, typename V,typename W>                            
+auto operator+(const pair<T,U> & l, pair<V,W> & r) 
+	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)>                
+{                                                                                  
+    return {l.first+r.first,l.second+r.second};                                    
+} 
 class dsu {
 	map <pi, pi> n2k;
 public:
@@ -72,44 +84,31 @@ public:
 			return true;
 	}
 };
-pi solve()
+void solve(int t)
 {
 	int n, r, c, sr, sc;
-	map <pi, vpi> box_ns, box_we;
 	string p;
 	cin>>n>>r>>c>>sr>>sc;
 	cin>>p;
-	pi curr = mp(sr, sc), last;
+	pi curr = {sr, sc}, last;
 	dsu ns(curr), we(curr);
-	box_ns[ns.findRoot(curr)].pb(mp(sr-1, sc));
-	box_ns[ns.findRoot(curr)].pb(mp(sr+1, sc));
-	box_we[we.findRoot(curr)].pb(mp(sr, sc-1));
-	box_we[we.findRoot(curr)].pb(mp(sr, sc+1));
-	map <char, pi> conv;
-	conv['N'] = mp(-1, 0);
-	conv['S'] = mp(1, 0);
-	conv['W'] = mp(0, -1);
-	conv['E'] = mp(0, 1);
-	map <char, int> conv2;
-	conv2['N'] = 0;
-	conv2['S'] = 1;
-	conv2['W'] = 0;
-	conv2['E'] = 1;
+	map <pi, vpi> box_ns = {{curr, {{sr-1, sc}, {sr+1, sc}}}};
+	map <pi, vpi> box_we = {{curr, {{sr, sc-1}, {sr, sc+1}}}};
+	map <char, pi> conv = {
+		{'N', {-1, 0}}, {'S', {1, 0}}, {'W', {0, -1}},{'E', {0, 1}}
+	};
+	map <char, int> conv2 = {{'N', 0}, {'S', 1}, {'W', 0}, {'E', 1}};
 	f(i, 0, p.size())
 	{
-		// cout<<"last = "<<curr.fi<<" "<<curr.se<<" ";
 		last = curr;
-		curr.fi += conv[p[i]].fi;
-		curr.se += conv[p[i]].se;
-		// cout<<"curr = "<<curr.fi<<" "<<curr.se<<endl;
+		curr += conv[p[i]];
 		if(p[i] == 'N' || p[i] == 'S')
 		{
 			while(ns.isPresent(curr))
 			{
-				// cout<<"ns.isPresent(curr) "<<ns.isPresent(curr)<<endl;
 				box_ns[ns.findRoot(curr)][0].fi = 
-					min(box_ns[ns.findRoot(curr)][0].fi,
-						box_ns[ns.findRoot(last)][0].fi);
+				min(box_ns[ns.findRoot(curr)][0].fi,
+					box_ns[ns.findRoot(last)][0].fi);
 				box_ns[ns.findRoot(curr)][1].fi = 
 				max(box_ns[ns.findRoot(curr)][1].fi,
 					box_ns[ns.findRoot(last)][1].fi);
@@ -119,30 +118,19 @@ pi solve()
 			}
 			ns.insert(curr);
 			ns.un(last, curr);
-			box_ns[ns.findRoot(curr)][conv2[p[i]]].fi += conv[p[i]].fi;
-			box_ns[ns.findRoot(curr)][conv2[p[i]]].se += conv[p[i]].se;
-			// cout<<"Inside ";
-			// cout<<"last = "<<curr.fi<<" "<<curr.se<<" ";
-			// cout<<"curr = "<<curr.fi<<" "<<curr.se<<endl;
+			box_ns[ns.findRoot(curr)][conv2[p[i]]] =
+				box_ns[ns.findRoot(curr)][conv2[p[i]]] + conv[p[i]];
 		}
 		else
 		{
 			while(we.isPresent(curr))
 			{
-				// cout<<"we.isPresent(curr) "<<we.isPresent(curr)<<endl;
-				// cout<<"before ";
-				// cout<<we.findRoot(curr).fi<<" "<<we.findRoot(curr).se<<" "<<
-				// 	box_we[we.findRoot(curr)][0].se<<" "<<box_we[we.findRoot(curr)][1].se<<endl;
-				// cout<<we.findRoot(last).fi<<" "<<we.findRoot(last).se<<" "<<
-				// 	box_we[we.findRoot(last)][0].se<<" "<<box_we[we.findRoot(last)][1].se<<endl;
 				box_we[we.findRoot(curr)][0].se = 
 					min(box_we[we.findRoot(curr)][0].se,
 						box_we[we.findRoot(last)][0].se);
 				box_we[we.findRoot(curr)][1].se = 
 				max(box_we[we.findRoot(curr)][1].se,
 					box_we[we.findRoot(last)][1].se);
-				// cout<<"after ";
-				// cout<<box_we[we.findRoot(curr)][0].se<<" "<<box_we[we.findRoot(curr)][1].se<<endl;
 				we.un(curr, last);
 				last = curr;
 				curr = box_we[we.findRoot(curr)][conv2[p[i]]];
@@ -151,29 +139,24 @@ pi solve()
 			we.un(last, curr);
 			box_we[we.findRoot(curr)][conv2[p[i]]].fi += conv[p[i]].fi;
 			box_we[we.findRoot(curr)][conv2[p[i]]].se += conv[p[i]].se;
-			// cout<<"Inside ";
-			// cout<<"last = "<<curr.fi<<" "<<curr.se<<" ";
-			// cout<<"curr = "<<curr.fi<<" "<<curr.se<<endl;
-			// cout<<we.findRoot(curr).fi<<" "<<we.findRoot(curr).se<<" "<<
-					// box_we[we.findRoot(curr)][0].se<<" "<<box_we[we.findRoot(curr)][1].se<<endl;
-			// cout<<we.findRoot(last).fi<<" "<<we.findRoot(last).se<<" "<<
-				// box_we[we.findRoot(last)][0].se<<" "<<box_we[we.findRoot(last)][1].se<<endl;
-
 		}
 		if(ns.isPresent(curr) == false)
 		{
 			ns.insert(curr);
-			box_ns[ns.findRoot(curr)].pb(mp(curr.fi - 1, curr.se));
-			box_ns[ns.findRoot(curr)].pb(mp(curr.fi + 1, curr.se));
+			box_ns[ns.findRoot(curr)] = {
+				{curr.fi - 1, curr.se}, {curr.fi + 1, curr.se}
+			};
 		}
+
 		if(we.isPresent(curr) == false)
 		{
 			we.insert(curr);
-			box_we[we.findRoot(curr)].pb(mp(curr.fi, curr.se - 1));
-			box_we[we.findRoot(curr)].pb(mp(curr.fi, curr.se + 1));
+			box_we[we.findRoot(curr)] = {
+				{curr.fi, curr.se - 1}, {curr.fi, curr.se + 1}
+			};
 		}
 	}
-	return curr;
+	cout<<"Case #"<<t<<": "<<curr.fi<<" "<<curr.se<<endl;
 }
 void testCase()
 {
@@ -181,8 +164,7 @@ void testCase()
 	cin>>t;
 	f(i, 1, t + 1)
 	{
-		pi ans = solve();
-		cout<<"Case #"<<i<<": "<<ans.fi<<" "<<ans.se<<endl;
+		solve(i);
 	}
 }
 int main()
