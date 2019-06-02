@@ -25,14 +25,12 @@ typedef multiset<ll> msl;
 const int MOD = 998244353;
 template <typename T,typename U, typename V,typename W>
 auto operator+=(const pair<T,U> & l, pair<V,W> & r) 
-	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)>                
-{                                                                                  
+	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)> {                                                                                  
     return {l.first+r.first,l.second+r.second};                                    
 } 
 template <typename T,typename U, typename V,typename W>                            
 auto operator+(const pair<T,U> & l, pair<V,W> & r) 
-	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)>                
-{                                                                                  
+	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)> {                                                                                  
     return {l.first+r.first,l.second+r.second};                                    
 }
 class Solution {
@@ -48,7 +46,8 @@ public:
             f(j, 0, i)
             {
                 if(!(bitRep[j] & bitRep[i]))
-                    ans = max(ans, (int)words[j].length() * (int)words[i].length());
+                    ans = max(ans, (int)words[j].length() * 
+                        (int)words[i].length());
             }
         }   
         return ans;
