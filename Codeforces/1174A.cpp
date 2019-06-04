@@ -47,14 +47,14 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 } 
 void solution(int t)
 {
-	int n, inp, s = 0, d = 0;
+	int n, s = 0, d = 0;
 	vi v;
 	cin>>n;
+	v.resize(2*n);
 	f(i, 0, 2*n)
 	{
-		cin>>inp;
-		v.pb(inp);
-		s += inp;
+		cin>>v[i];
+		s += v[i];
 	}
 	sort(all(v));
 	f(i, 0, n)

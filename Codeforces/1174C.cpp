@@ -56,7 +56,8 @@ void solution(int t)
 	{
 		if(v[i])	
 			continue;
-		for(int j = i; j <= n; j += i)
+		v[i] = x;
+		for(ll j = (ll)i * (ll)i; j <= (ll)n; j += i)
 			v[j] = x;
 		x++;
 	}

@@ -47,16 +47,14 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 } 
 void solution(int t)
 {
-	int n, x, temp;
+	int n, x, c = 1;
 	cin>>n>>x;
-	vi p;
+	vi p, z;
 	p.resize(22, 0);
 	p[1] = 2;
 	f(i, 2, 19)
 		p[i] = p[i - 1] * 2;
-	vi z;
 	unordered_set <int> s;
-	int c = 1;
 	if(x == 1)
 	{
 		if(n == 1)
@@ -70,23 +68,15 @@ void solution(int t)
 	s.insert(c);
 	f(i, c + 1, p[n])
 	{
-		temp = i;
-		if(temp == x || (temp ^ z[z.size() - 1]) == p[n] 
-			|| s.find(temp ^ x) != s.end())
+		if(i == x || s.find(i ^ x) != s.end())
 			continue;
-		z.pb(temp);
-		s.insert(temp);
+		z.pb(i);
+		s.insert(i);
 	}
-	// f(i, 0 ,z.size())
-	// 	cout<<z[i]<<" ";
-	// cout<<endl;
 	cout<<z.size()<<endl;
 	cout<<z[0]<<" ";
 	f(i, 1, z.size())
-	{
-		temp = z[i] ^ z[i-1];
-		cout<<temp<<" ";
-	}
+		cout<<(z[i] ^ z[i-1])<<" ";
 	cout<<endl;
 }
 void testCase()
