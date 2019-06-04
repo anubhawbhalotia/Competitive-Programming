@@ -48,20 +48,18 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 } 
 void solution(int t)
 {
-	int n;
+	int n, a = 0;
 	cin>>n;
 	vi v(n);
-	int a = 0;
 	f(i, 0, n)
 	{
 		cin>>v[i];
-		a = (v[i] & 1 == 1) ? (a | 2) : (a | 1);
+		a |= (v[i] & 1 == 1) ? 2 : 1;
 	}
 	if(a == 3)
 		sort(all(v));
 	f(i, 0, n)
 		cout<<v[i]<<" ";
-	cout<<endl;
 }
 void testCase()
 {
