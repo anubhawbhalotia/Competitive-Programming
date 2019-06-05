@@ -71,25 +71,12 @@ int solution(int t)
 			d.insert(f[i]);
 		}
 	}
-	// cout<<d.size()<<" "<<*d.begin()<<endl;
 	fre(i, n - 1, 0)
 	{
-		// cout<<"i= "<<i<<endl;
-		if(d.size() == 2)
-		{
-			auto it2 = d.begin();
-			auto it1 = it2;
-			it2++;
-			if(*it1 == 1 && s[1].size() == 1)
+		if((d.size() == 2 && ((*d.begin() == 1 && s[1].size() == 1) || 
+			(*d.rbegin() - *d.begin() == 1 && s[*d.rbegin()].size() == 1))) || 
+			(d.size() == 1 && (*d.begin() == 1 || s[*d.begin()].size() == 1)))
 				return i + 1;
-			if(*it2 - *it1 == 1 && s[*it2].size() == 1)
-				return i + 1;
-		}
-		else if(d.size() == 1 && (*d.begin() == 1 || s[*d.begin()].size() == 1))
-		{
-			// cout<<"true"<<endl;
-			return i + 1;
-		}
 		s[f[a[i]]].erase(a[i]);
 		if(s[f[a[i]]].empty())
 			d.erase(f[a[i]]);

@@ -2,9 +2,6 @@
 #include <ext/pb_ds/tree_policy.hpp>  
 #include <functional>
 #include <bits/stdc++.h>
-#include <cstddef>
-
-#include <limits>
 using namespace __gnu_pbds;
 using namespace std;
 typedef long long ll;
@@ -49,16 +46,11 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 	-> pair<decltype(l.first+r.first),decltype(l.second+r.second)>                
 {                                                                                  
     return {l.first+r.first,l.second+r.second};                                    
-} 
-vi x, y, n;
-set <pair < pair <  int, int >, int > > s;
-map <pair <int, int>, int> m;
-int gcd(int a, int b)
-{
-	if(b == 0)
-		return a;
-	return gcd(b, a % b);
 }
+template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}   
+vi x, y, n;
+set <pair < pii, int > > s;
+map <pii, int> m;
 void solution(int t)
 {
 	int n, a, b, c, g;
@@ -89,15 +81,11 @@ void solution(int t)
 	for(auto it = s.begin(); it != s.end(); it++)
 	{
 		if(m.find(it->fi) == m.end())
-			m[it->fi] = 1;
-		else
-			m[it->fi]++;
+			m[it->fi] = 0;
+		m[it->fi]++;
 	}
 	for(auto it = s.begin(); it != s.end(); it++)
-	{
-		// cout<<it->fi.fi<<" "<<it->fi.se<<" "<<it->se<<endl;
 		ans += (ll)s.size() - (ll)m[it->fi];
-	}
 	cout<<ans/2<<endl;
 
 }

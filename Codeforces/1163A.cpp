@@ -51,11 +51,7 @@ void solution(int t)
 {
 	int n, m, ans;
 	cin>>n>>m;
-	if(m == 0)
-		ans = 1;
-	else 
-		ans = min(m, n - m);
-	cout<<ans<<endl;
+	cout<<((m == 0) ? 1 : min(m, n - m))<<endl;
 }
 void testCase()
 {
