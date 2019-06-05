@@ -71,7 +71,7 @@ void solution(int t)
 			a = y[j] - y[i];
 			b = x[j] - x[i];
 			c = (y[i]*x[j]) - (y[j]*x[i]);
-			g = gcd(gcd(a,b), c);
+			g = gcd(gcd(a, b), c);
 			a /= g;
 			b /= g;
 			c /= g;
@@ -80,12 +80,14 @@ void solution(int t)
 	}
 	for(auto it = s.begin(); it != s.end(); it++)
 	{
-		if(m.find(it->fi) == m.end())
-			m[it->fi] = 0;
-		m[it->fi]++;
+		g = gcd(it->fi.fi, it->fi.se);
+		m[{it->fi.fi / g, it->fi.se / g}]++;
 	}
 	for(auto it = s.begin(); it != s.end(); it++)
-		ans += (ll)s.size() - (ll)m[it->fi];
+	{
+		g = gcd(it->fi.fi, it->fi.se);
+		ans += (ll)s.size() - (ll)m[{it->fi.fi / g, it->fi.se / g}];
+	}
 	cout<<ans/2<<endl;
 
 }
