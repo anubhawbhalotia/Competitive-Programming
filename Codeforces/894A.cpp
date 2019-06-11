@@ -52,27 +52,25 @@ void solution(int t)
 {
 	string s;
 	cin>>s;
-	vi dp(s.length(), 0), d(s.length(), 0);
+	vi pre(s.length(), 0), suf(s.length(), 0);
+	if(s[0] == 'Q')
+		pre[0] = 1;
+	f(i, 1, s.length())
+	{
+		pre[i] = pre[i - 1];
+		if(s[i] == 'Q')
+			pre[i]++;
+	}
 	if(s[s.length() - 1] == 'Q')
-		dp[s.length() - 1] = 1;
-	fre(i, s.length() - 2, 0)
-	{
-		dp[i] = dp[i + 1];
-		if(s[i] == 'Q')
-			dp[i]++;
-	}
-	d[n - 1] = 0;
-	fre(i, s.length() - 2, 0)
-	{
-		d[i] = d[i + 1];
-		if(s[i] == 'A')
-			d[i] += dp[i];
-	}
+		suf[s.length() - 1] = 1;
 	int ans = 0;
-	f(i, 0, s.length())
+	fre(i, s.length() - 2, 0)
 	{
+		suf[i] = suf[i + 1];
 		if(s[i] == 'Q')
-			ans += s[i + 1];
+			suf[i]++;
+		if(s[i] == 'A')
+			ans += (pre[i] * suf[i]);
 	}
 	cout<<ans<<endl;
 }
