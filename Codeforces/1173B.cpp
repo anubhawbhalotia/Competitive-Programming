@@ -59,9 +59,7 @@ void solution(int t)
 		cout<<i<<" "<<i+1<<endl;
 	}	
 	if(n % 2 == 1)
-	{
 		cout<<(n / 2) + 1<<" "<<(n  / 2) + 1<<endl;
-	}
 }
 void testCase()
 {

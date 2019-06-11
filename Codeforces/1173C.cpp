@@ -48,17 +48,15 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
     return {l.first+r.first,l.second+r.second};                                    
 }
 template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);} 
-int n;
+int n, a;
 vi m;
 bool isSolvable(int mid)
 {
-	int i;
 	int c = mid;
-	for(i = 1; i <= n - mid; i++)
+	fe(i, 1, n - mid)
 	{
-		if(m[i] >= c)
+		if(m[i] >= c++)
 			return false;
-		c++;
 	}
 	return true;
 } 
@@ -66,9 +64,9 @@ int solution(int t)
 {
 	cin>>n;
 	m.resize(n + 1, -1);
-	vi a(n), b(n);
+	vi b(n);
 	f(i, 0, n)
-		cin>>a[i];
+		cin>>a;
 	f(i, 0, n)
 	{
 		cin>>b[i];
@@ -76,21 +74,19 @@ int solution(int t)
 	}
 	if(m[1] != -1)
 	{
-		int j = 1, i;
+		int i, j = 1;
 		for(i = m[1]; i < n; i++)
 		{
-			if(b[i] != j)
+			if(b[i] != j++)
 				break;
-			j++;
 		}
 		if(i == n)
 		{
 			int c = 0;
 			for(i = b[n - 1] + 1; i <= n; i++)
 			{
-				if(m[i] >= c)
+				if(m[i] >= c++)
 					break;
-				c++;
 			}
 			if(i == n + 1)
 				return m[1];
@@ -98,17 +94,7 @@ int solution(int t)
 	}
 	int l = 0, r = n ;
 	while(l < r)
-	{
-		int mid = (l + r) / 2;
-		// cout<<"mid = "<<mid<<" ";
-		bool ans = isSolvable(mid);
-		// cout<<ans<<endl;
-		if(ans)
-			r = mid;
-		else
-			l = mid + 1;
-	}
-	// cout<<"2nd"<<endl;
+		(isSolvable((l + r) / 2)) ? r = (l + r) / 2 : l = (l + r) / 2 + 1;
 	return n + l;
 }
 void testCase()
