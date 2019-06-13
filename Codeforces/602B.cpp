@@ -50,63 +50,33 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
     return {l.first+r.first,l.second+r.second};                                    
 }
 template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}   
-int n;
-vi a;
-class segTree
-{
-	vi M, m;
-public:
-	segTree()
-	{
-		M.resize(600000);
-		m.resize(600000);
-	}
-	void build(int node = 0, int st = 0, int en = n - 1)
-	{
-		if(st == en)
-		{
-			M[node] = a[st];
-			m[node] = a[st];
-			return ;
-		}
-		build(node*2+1, st, (st + en) / 2);
-		build(node*2+2, (st + en) / 2 + 1, en);
-		M[node] = max(M[node*2+1], M[node*2+2]);
-		m[node] = min(m[node*2+1], m[node*2+2]);
-	}
-	int query(int q, int l, int r, int node = 0, int st = 0, int en = n - 1)
-	{
-		if(st >= l && en <= r)
-			return ((q)?m[node]:M[node]);
-		if(l > en || r < st)
-			return (q)?INT_MAX:INT_MIN;
-		int a = query(q, l, r, node*2+1, st, (st+en)/2);
-		int b = query(q, l, r, node*2+2, (st+en)/2+1, en);
-		return (q)?min(a, b):max(a, b);
-	}
-};
 void solution(int t)
 {
+	int n;
 	cin>>n;
-	a.resize(n);
+	vi a(n);
 	f(i, 0, n)
-		cin>>a[i];	
-	segTree b;
-	b.build();
+		cin>>a[i];
+	int s = 0, index, l = 0;
 	int ans = INT_MIN;
-	f(i, 0, n)
+	f(i, 1, n)
 	{
-		int start = i, end = n - 1;
-		while(start < end)
+		if(a[i] - a[i-1] != 0)
 		{
-			int mid = (start + end) / 2 + 1;
-			if(b.query(0, i, mid) - b.query(1, i, mid) <= 1)
-				start = mid;
+			if(a[i] - a[i - 1] == s)
+			{
+				ans = max(ans, i - l);
+				l = index;
+				index = i;
+			}
 			else
-				end = mid - 1;
+			{
+				s = a[i] - a[i - 1];
+				index = i;
+			}
 		}
-		ans = max(ans, start - i + 1);
 	}
+	ans = max(ans, n - l);
 	cout<<ans<<endl;
 }
 void testCase()
