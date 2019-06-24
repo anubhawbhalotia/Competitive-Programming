@@ -43,37 +43,28 @@ template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}
 class Solution {
 public:
     int kEmptySlots(vector<int>& bulb, int k) {
-        if(bulb.size() < k + 2)
-            return -1;
+        int l = 0, ans = INT_MAX, flag = 0;
         vi b(bulb.size());
         f(i, 0, bulb.size())
             b[bulb[i] - 1] = i + 1;
-        f(i, 0, b.size())
-            cout<<b[i]<<" ";
-        cout<<endl;
-        deque <int> q;
-        f(i, 1, k + 1)
+        while(l + k + 1 < b.size())
         {
-            while(!q.empty() && q.back() > b[i])
-                q.pop_back();
-            q.push_back(b[i]);
+            f(i, l + 1, l + k + 1)
+            {
+                if(b[i] < b[l] || b[i] < b[l + k + 1])
+                {
+                    l = i;
+                    flag = 1;
+                    break;
+                }
+            }
+            if(!flag)
+            {
+                ans = min(ans, max(b[l], b[l + k + 1]));
+                l = l + k + 1;
+            }
+            flag = 0;
         }
-        int ans = INT_MAX;
-        int i = k + 1;
-        while(i < b.size())
-        {
-            if(k == 0 || q.front() > b[i - k - 1] && q.front() > b[i])
-                ans = min(ans,max(b[i - k - 1], b[i]));
-            if(q.front() == b[i - k])
-                q.pop_front();
-            while(!q.empty() && q.back() > b[i])
-                q.pop_back();
-            q.push_back(b[i]);
-            i++;
-        }
-        if(ans == INT_MAX)
-            return -1;
-        else
-            return ans;
+        return (ans == INT_MAX) ? -1 : ans;
     }
 };
