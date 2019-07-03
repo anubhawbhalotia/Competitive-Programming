@@ -2,14 +2,17 @@
 using namespace std;
 typedef long long ll;
 typedef vector<int> vi;
-typedef vector<vi> vvi;
-typedef vector<ll> vl;
-typedef pair<int,int> pi;
-typedef pair<ll,ll> pl;
+typedef vector<long long> vl;
+typedef vector<vector<int>> vvi;
+typedef vector<vector<long long>> vvl;
+typedef pair<int,int> pii;
+typedef pair<long long ,long long> pll;
 typedef set<int> si;
-typedef set<ll> sl;
+typedef set<long long> sl;
+typedef unordered_set <int> usi;
+typedef unordered_set <long long> usl;
 typedef multiset<int> msi;
-typedef multiset<ll> msl;
+typedef multiset<long long> msl;
 #define fi first
 #define se second
 #define mp make_pair
@@ -18,7 +21,7 @@ typedef multiset<ll> msl;
 #define ub upper_bound
 #define beg(x) x.begin()
 #define en(x) x.end()
-#define all(v) beg(v), en(v)
+#define all(x) x.begin(), x.end()
 #define f(i,s,n) for(int i=s;i<n;i++)
 #define fe(i,s,n) for(int i=s;i<=n;i++)
 #define fr(i,s,n) for(int i=s;i>n;i--)
@@ -36,57 +39,54 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 {                                                                                  
     return {l.first+r.first,l.second+r.second};                                    
 }
+template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}     
 class Solution {
 public:
-    inline bool isPalindrome(string a)
-    {
-        fe(i, 0, (a.length() - 1) / 2)
-        {
-            if(a[i] != a[a.length() - i - 1])
-                return false;
-        }
-        return true;
-    }
+	int checkPalin(vector <string> &w, int &index, int s, int e)
+	{
+        int x = 0;
+		f(i, s, s + (e - s + 1)/2)
+		{
+			if(w[index][i] != w[index][e - x++])
+            {
+				return 0;
+            }
+		}
+		return 1;
+	}
     vector<vector<int>> palindromePairs(vector<string>& w) {
-        set<pair<char, int>> s;
-        vi r, temp;
+    	unordered_map <string, int> m;
+    	string p;
+    	vvi ans;
         f(i, 0, w.size())
         {
-            if(w[i] == "")
-                r.pb(i);
-            else
-                s.insert(mp(w[i][w[i].length()-1], i));
+        	p = w[i];
+        	reverse(all(p));
+        	m[p] = i;
         }
-        vector <vector <int>> ans;
-        set<pair<char, int>> :: iterator it;
         f(i, 0, w.size())
         {
-            it = s.lb(mp(w[i][0], 0));
-            while(it->fi == w[i][0])
-            {
-                if(i != it->se)
+        	f(j, 0, w[i].length())
+        	{
+        		p = w[i].substr(0, j + 1);
+                if(m.find(p) != m.end() && m[p] != i && checkPalin(w, i, j + 1, w[i].length() - 1))
                 {
-                    if(isPalindrome(w[i] + w[it->se]))
+        			ans.pb({i, m[p]});
+                }
+        		if(j)
+        		{
+        			p = w[i].substr(j, w[i].length() - j);
+	        		if(m.find(p) != m.end() && m[p] != i && checkPalin(w, i, 0, j - 1))
                     {
-                        temp = {i, it->se};
-                        ans.pb(temp);
+	        			ans.pb({m[p], i});
                     }
-                }
-                it++;
-            }
-        }
-        f(i, 0, w.size())
-        {
-            if(w[i] != "" && isPalindrome(w[i]))
-            {
-                f(j, 0, r.size())
-                {
-                    temp = {i, r[j]};
-                    ans.pb(temp);
-                    temp = {r[j], i};
-                    ans.pb(temp);
-                }
-            }
+	        	}
+        	}
+        	if(checkPalin(w, i, 0, w[i].length() - 1) && m.find("") != m.end() && m[""] != i)
+        	{
+        		ans.pb({i, m[""]});
+        		ans.pb({m[""], i});
+        	}
         }
         return ans;
     }
