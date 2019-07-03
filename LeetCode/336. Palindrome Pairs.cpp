@@ -42,51 +42,35 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}     
 class Solution {
 public:
-	int checkPalin(vector <string> &w, int &index, int s, int e)
+	bool checkPalin(string &a)
 	{
-        int x = 0;
-		f(i, s, s + (e - s + 1)/2)
-		{
-			if(w[index][i] != w[index][e - x++])
-            {
-				return 0;
-            }
-		}
-		return 1;
+        int i = 0;
+        while(i < a.length() / 2)
+			if(a[i] != a[a.length() - 1 - i++])
+				return false;
+		return true;
 	}
     vector<vector<int>> palindromePairs(vector<string>& w) {
     	unordered_map <string, int> m;
-    	string p;
     	vvi ans;
         f(i, 0, w.size())
         {
-        	p = w[i];
+        	string p = w[i];
         	reverse(all(p));
         	m[p] = i;
         }
         f(i, 0, w.size())
         {
-        	f(j, 0, w[i].length())
+        	f(j, -1, (int)w[i].length())
         	{
-        		p = w[i].substr(0, j + 1);
-                if(m.find(p) != m.end() && m[p] != i && checkPalin(w, i, j + 1, w[i].length() - 1))
-                {
-        			ans.pb({i, m[p]});
-                }
-        		if(j)
-        		{
-        			p = w[i].substr(j, w[i].length() - j);
-	        		if(m.find(p) != m.end() && m[p] != i && checkPalin(w, i, 0, j - 1))
-                    {
-	        			ans.pb({m[p], i});
-                    }
-	        	}
+        		string p = w[i].substr(0, j + 1);
+                string q = w[i].substr(j + 1);
+                if(m.find(p) != m.end() && m[p] != i && checkPalin(q))
+                    ans.pb({i, m[p]});
+                if(j >= 0 && m.find(q) != m.end() && m[q] != i && checkPalin(p))
+                    ans.pb({m[q], i});
         	}
-        	if(checkPalin(w, i, 0, w[i].length() - 1) && m.find("") != m.end() && m[""] != i)
-        	{
-        		ans.pb({i, m[""]});
-        		ans.pb({m[""], i});
-        	}
+        	
         }
         return ans;
     }
