@@ -1,9 +1,9 @@
 class Solution {
 public:
-    int findF(string &s)
+    short int findF(string &s)
     {
         char m = 'z' + 1;
-        int ans = 0;
+        short int ans = 0;
         for(int i = 0; i != s.length(); i++)
         {
             if(s[i] < m)
@@ -19,9 +19,7 @@ public:
         return ans;
     }
     vector<int> numSmallerByFrequency(vector<string>& queries, vector<string>& words) {
-        vector <int> ans, z(13, 0);
-        int f, g;
-        char m;
+        vector <int> ans, z(12, 0);
         for(int i = 0; i != words.size(); i++)
         {
             z[findF(words[i])]++;
