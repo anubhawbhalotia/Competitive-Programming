@@ -1,70 +1,79 @@
 class LRUCache {
 public:
-    int a[10000]={};
-    int c[100000]={};
-    int d[10000]={};
+    typedef struct node
+    {
+        struct node *next, *prev;
+        int key, val;
+        node(int k = -1, int d = -1)
+        {
+            key = k;
+            val = d;
+            prev = NULL;
+            next = NULL;
+        }
+    }node;
+    unordered_map <int, node*> data;
     int cap;
-    int pt=1;
-    int ptmin=1;
-    int start=0,  end=0;
+    node *head, *tail;
     LRUCache(int capacity) {
-        cap=capacity;
+        head = new node(0, 0);
+        tail = new node(0, capacity);
+        head->next = tail;
+        tail->prev = head;
     }
-    
+    node* remove_node(node* p)
+    {
+        p->prev->next = p->next;
+        p->next->prev = p->prev;
+        return p;
+    }
+    void add_node(node* p)
+    {
+        tail->prev->next = p;
+        p->prev = tail->prev;
+        p->next = tail;
+        tail->prev = p;
+    }
     int get(int key) {
-        if(a[key]==0)
-            return -1;
-        else
+        if(data.find(key) != data.end())
         {
-            c[d[key]]=0;
-            d[key]=pt;
-            c[pt]=key;
-            pt++;
-            while(c[ptmin]==0)
-            {
-                ptmin++;
-            }
-            return a[key];
+            node* p = data[key];
+            remove_node(p);
+            add_node(p);
+            return p->val;
         }
+        return -1;
     }
-    
     void put(int key, int value) {
-       if(a[key]!=0)
-       {
-           a[key]=value;
-           c[d[key]]=0;
-           d[key]=pt;
-           c[pt]=key;
-           pt++;
-           return;
-       }
-        if(end-start>=cap)
+        node *p = NULL;
+        if(data.find(key) != data.end())
         {
-            while(c[ptmin]==0)
-            {
-                ptmin++;
-            }
-            d[c[ptmin]]=0;
-            a[c[ptmin]]=0;
-            c[ptmin]=0;
-            
-            start++;
-            end++;
+            p = remove_node(data[key]);
+            p->val = value;
         }
         else
         {
-            end++;
+            if(head->val == tail->val)
+            {
+                data.erase(head->next->key);
+                p = remove_node(head->next);
+                p->key = key;
+                p->val = value;
+            }
+            else
+            {
+                p = new node(key, value);
+                head->val++;
+            }
+            data[key] = p;
         }
-        a[key]=value;
-        c[pt]=key;
-        d[key]=pt;
-        pt++;
+        add_node(p);
     }
 };
 
 /**
  * Your LRUCache object will be instantiated and called as such:
- * LRUCache obj = new LRUCache(capacity);
- * int param_1 = obj.get(key);
- * obj.put(key,value);
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
  */
