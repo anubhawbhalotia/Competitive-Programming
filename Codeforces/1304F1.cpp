@@ -80,7 +80,7 @@ public:
 };
 void solution()
 {
-	int n, m, k, ans = 0;
+	int n, m, k;
 	cin>>n>>m>>k;
 	int b = m-k+1, temp = 0;
 	vvi a(n, vi(m)), s(n, vi(b, 0));
@@ -94,13 +94,11 @@ void solution()
 			temp += a[i][j];
 		s[i][0] = temp;
 		s[max(0, i-1)][0] += (i>0) ? s[i][0] : 0;
-		ans = max(ans, temp);
 		f(j, k, m)
 		{
 			temp = temp - a[i][j - k] + a[i][j];
 			s[i][j-k+1] = temp;
 			s[max(0, i-1)][j-k+1] += (i>0) ? s[i][j-k+1] : 0;;
-			ans = max(ans, temp);
 		}
 	}	
 	dp_1 = s[n-1];
@@ -125,10 +123,9 @@ void solution()
 				if(p+k < m)
 					dp_1[j] = max(dp_1[j], dp_2[p+1] + s[i][j] - temp);
 			}
-			ans = max(ans, dp_1[j]);
 		}
 	}
-	cout<<ans<<endl;
+	cout<<*(max_element(all(dp_1)))<<endl;
 }
 void testCase()
 {
