@@ -50,82 +50,27 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
     return {l.first+r.first,l.second+r.second};                                    
 }
 template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}   
-vi dp_1, dp_2;
-class segTree
+void solution(int t)
 {
-	vi g;
-public:
-	segTree()
+	int n;
+	string s;
+	cin>>n>>s;
+	vi ans(n), m(27, -1);
+	f(i, 0, s.length())
 	{
-		g.resize(1000000, 0);
+		ans[i] = m[s[i]-'a' + 1] + 1;
+		fe(j, 0, s[i] - 'a')
+			m[j] = max(m[j], ans[i]); 
 	}
-	int build(vi &a, int node = 0, int l = 0, int r = dp_1.size() - 1)
+	if(*(max_element(all(m))) <= 1)
 	{
-		if(l == r)
-		{
-			g[node] = a[l];
-			return g[node];
-		}
-		g[node] = max(build(a, node*2+1, l, (l+r)/2),build(a, node*2+2, (l+r)/2+1, r));
-		return g[node];
+		cout<<"YES"<<endl;
+		f(i, 0, n)
+			cout<<ans[i];
+		cout<<endl;
+		return ;
 	}
-	int query(int lo, int hi, int node = 0, int l = 0, int r = dp_1.size() - 1)
-	{
-		if(lo > r || hi < l || lo > hi)
-			return 0;
-		if(lo <= l && hi >= r)
-			return g[node];
-		return max(query(lo, hi, node*2+1, l, (l+r)/2), query(lo, hi, node*2+2, (l+r)/2+1, r));
-	}
-};
-void solution()
-{
-	int n, m, k;
-	cin>>n>>m>>k;
-	int b = m-k+1, temp = 0;
-	vvi a(n, vi(m)), s(n, vi(b, 0));
-	f(i, 0, n)
-		f(j, 0, m)
-			cin>>a[i][j];
-	f(i, 0, n)
-	{
-		temp = 0;
-		f(j, 0, m)
-		{
-			temp += a[i][j];
-			if(j >= k-1)
-			{
-				s[i][j-k+1] = temp;
-				s[max(0, i-1)][j-k+1] += (i>0) ? s[i][j-k+1] : 0;
-				temp -= a[i][j-k+1];	
-			}
-		}
-	}	
-	dp_1 = s[n-1];
-	segTree t;
-	fre(i, n-2, 0)
-	{
-		dp_2 = dp_1;
-		t.build(dp_2);
-		f(j, 0, b)
-		{
-			dp_1[j] = max(t.query(j + k, b - 1), t.query(0, j - k)) + s[i][j];
-			temp = 0;
-			f(p, j, j+k)
-			{
-				temp += a[i+1][p];
-				if(p-k+1 >= 0)
-					dp_1[j] = max(dp_1[j], dp_2[p-k+1] + s[i][j] - temp);
-			}
-			f(p,j,j+k-1)
-			{
-				temp -= a[i+1][p];
-				if(p+k < m)
-					dp_1[j] = max(dp_1[j], dp_2[p+1] + s[i][j] - temp);
-			}
-		}
-	}
-	cout<<*(max_element(all(dp_1)))<<endl;
+	cout<<"NO"<<endl;
 }
 void testCase()
 {
@@ -133,7 +78,7 @@ void testCase()
 	// cin>>t;
 	f(i, 0, t)
 	{
-		solution();
+		solution(i + 1);
 	}
 }
 int main()
