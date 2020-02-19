@@ -50,7 +50,7 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
     return {l.first+r.first,l.second+r.second};                                    
 }
 template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}   
-vvi dp;
+vi dp_1, dp_2;
 class segTree
 {
 	vi g;
@@ -59,7 +59,7 @@ public:
 	{
 		g.resize(1000000, 0);
 	}
-	int build(vi &a, int node = 0, int l = 0, int r = dp[0].size() - 1)
+	int build(vi &a, int node = 0, int l = 0, int r = dp_1.size() - 1)
 	{
 		if(l == r)
 		{
@@ -69,7 +69,7 @@ public:
 		g[node] = max(build(a, node*2+1, l, (l+r)/2),build(a, node*2+2, (l+r)/2+1, r));
 		return g[node];
 	}
-	int query(int lo, int hi, int node = 0, int l = 0, int r = dp[0].size() - 1)
+	int query(int lo, int hi, int node = 0, int l = 0, int r = dp_1.size() - 1)
 	{
 		if(lo > r || hi < l || lo > hi)
 			return 0;
@@ -82,62 +82,50 @@ void solution()
 {
 	int n, m, k, ans = 0;
 	cin>>n>>m>>k;
-	int b = m-k+1;
-	dp.resize(n, vi(b, 0));
-	vvi a(n, vi(m)), s(n);
-
+	int b = m-k+1, temp = 0;
+	vvi a(n, vi(m)), s(n, vi(b, 0));
 	f(i, 0, n)
 		f(j, 0, m)
 			cin>>a[i][j];
-	
 	f(i, 0, n)
 	{
-		int temp = 0;
-
+		temp = 0;
 		f(j, 0, k)
 			temp += a[i][j];
-
-		s[i].pb(temp);
+		s[i][0] = temp;
+		s[max(0, i-1)][0] += (i>0) ? s[i][0] : 0;
 		ans = max(ans, temp);
 		f(j, k, m)
 		{
 			temp = temp - a[i][j - k] + a[i][j];
-			s[i].pb(temp);
+			s[i][j-k+1] = temp;
+			s[max(0, i-1)][j-k+1] += (i>0) ? s[i][j-k+1] : 0;;
 			ans = max(ans, temp);
 		}
 	}	
-
-	dp[n-1] = s[n-1];
-	f(i, 0, n - 1)
-		f(j, 0, b)
-			s[i][j] += s[i+1][j];
-	
+	dp_1 = s[n-1];
 	segTree t;
-	
 	fre(i, n-2, 0)
 	{
-		t.build(dp[i+1]);
+		dp_2 = dp_1;
+		t.build(dp_2);
 		f(j, 0, b)
 		{
-			dp[i][j] = max(t.query(j + k, b - 1), t.query(0, j - k)) + s[i][j];
-			int temp = 0;
+			dp_1[j] = max(t.query(j + k, b - 1), t.query(0, j - k)) + s[i][j];
+			temp = 0;
 			f(p, j, j+k)
 			{
 				temp += a[i+1][p];
 				if(p-k+1 >= 0)
-				{
-					dp[i][j] = max(dp[i][j], dp[i+1][p-k+1] + s[i][j] - temp);
-				}
+					dp_1[j] = max(dp_1[j], dp_2[p-k+1] + s[i][j] - temp);
 			}
 			f(p,j,j+k-1)
 			{
 				temp -= a[i+1][p];
 				if(p+k < m)
-				{
-					dp[i][j] = max(dp[i][j], dp[i+1][p+1] + s[i][j] - temp);
-				}
+					dp_1[j] = max(dp_1[j], dp_2[p+1] + s[i][j] - temp);
 			}
-			ans = max(ans, dp[i][j]);
+			ans = max(ans, dp_1[j]);
 		}
 	}
 	cout<<ans<<endl;
