@@ -106,7 +106,8 @@ vector<int> getLibSeqV2()    //strong to weak  // uses  sum of (score/frequency)
 		{	int book_id = id[lib][j];
 			libScore += (double)book_score[book_id]/(double)(bookFreq[ book_id ]);
 		}
-		libScore = (libScore/ (double)t[lib])*m[lib];
+		double days = t[lib] + ceil( n[lib]/m[lib] );
+		libScore = libScore/ (double)t[lib];
 		scoresV2.push_back(libScore);
 
 	}
