@@ -9,16 +9,20 @@
  */
 class Solution {
 public:
-    void trav(TreeNode* p)
-    {
-        if(!p)
-            return;
-        trav(p->left);
-        trav(p->right);
-        swap(p->left, p->right);
-    }
     TreeNode* invertTree(TreeNode* root) {
-        trav(root);
+        stack <TreeNode*> s;
+        if(root)
+            s.push(root);
+        while(!s.empty())
+        {
+            TreeNode* temp = s.top();
+            s.pop();
+            swap(temp->left, temp->right);
+            if(temp->right)
+                s.push(temp->right);
+            if(temp->left)
+                s.push(temp->left);
+        }
         return root;
     }
 };
