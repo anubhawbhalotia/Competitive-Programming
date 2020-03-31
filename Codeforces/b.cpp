@@ -49,43 +49,114 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 {                                                                                  
     return {l.first+r.first,l.second+r.second};                                    
 }
-template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}  
+template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}   
 int extendedEuclid(int a, int b, int *x, int *y){if(a == 0){*x = 0;*y = 1;
 	return b;}int x1, y1;int gcd = extendedEuclid(b % a, a, &x1, &y1);
 	*x = y1 - (b/a) * x1;*y = x1;return gcd;}
-void solution(int z)
+int leftSearch(vi &d, int &a, int t, int &n, int l, int r)
 {
-	int n, a, b, ans = INT_MAX;
-	vvi t(2);
-	vi w(2, 0);
-	cin>>n;
+	int m;
+	if(l >= r)
+		return 0;
+	while(l < r)
+	{
+		m = (l + r) / 2;
+		if(((n - m) * (a + 1)) + d[m] <= t)
+		{
+			r = m;
+		}
+		else
+		{
+			l = m + 1;
+		}
+	}
+	if(((n - l) * (a + 1)) + d[l] <= t)
+		return n - l;
+	else
+		return 0;
+}
+int rightSearch(vi &d, int &a, int t, int &n, int l, int r)
+{
+	int m;
+	if(l >= r)
+		return 0;
+	while(l < r)
+	{
+		m = (l + r) / 2 + 1;
+		if((m * (a + 1)) + d[m] <= t)
+		{
+			l = m;
+		}
+		else
+		{
+			r = m - 1;
+		}
+	}
+	if((l * (a + 1)) + d[l] <= t)
+		return l;
+	else
+		return 0;
+}
+void solution(int test_case)
+{
+	int n, a, b, t, c;
+	cin>>n>>a>>b>>t;
+	
+	unordered_map <char, int> m;
+	m['w'] = 1;
+	m['h'] = 0;
+	
+	vi h(n);
+	char e;
 	f(i, 0, n)
 	{
-		cin>>a>>b;
-		t[a - 1].pb(b);
-		w[a - 1] += b;
+		cin>>e;
+		h[i] = m[e] * b;
 	}
-	sort(all(t[0]));
-	sort(all(t[1]));
-	b = w[0];
-	fre(i, t[0].size(), 0)
+	
+	vi l(n, 0);
+	f(i, 1, n)
 	{
-		b = w[1];
-		fre(j, t[1].size(), 0)
-		{
-			if(((int)(t[0].size()) - i) + 2 * ((int)(t[1].size()) - j) >= 
-				w[0] + b)
-			{
-				ans = min(ans, ((int)t[0].size() - i) + 
-					2 * ((int)t[1].size() - j));
-				break;
-			}
-			if(j != 0)
-				b -= t[1][j - 1];
-		}
-		if(i != 0)
-			w[0] -= t[0][i - 1];
+		l[i] = l[i - 1] + h[i];
 	}
+
+	vi r(n, h[n - 1]);
+	fre(i, n - 2, 0)
+	{
+		r[i] = r[i + 1] + h[i];
+	}
+
+	int ans = 0;
+	int z = 1 + h[0];
+	if(z <= t)
+		ans = 1;
+	f(i, 1, n)
+	{
+		z += (a + 1 + h[i]);
+		if(z > t)
+			break;
+		if(t - z - (a * i) > 0)
+			c = leftSearch(r, a, t - z - (a * i), n, i + 1, n - 1);
+		else
+			c = 0;
+		ans = max(ans, i + 1 + c);
+		// cout<<"i = "<<i<<" c = "<<c<<" ans = "<<ans<<endl;
+	}
+
+	z = 1 + h[0];
+	fre(i, n - 1, 1)
+	{
+		z += (a + 1 + h[i]);
+		if(z > t)
+			break;
+		if(t - z - (a * (n - i)) > 0)
+			c = rightSearch(l, a, t - z - (a * (n - i)), n, 1, i - 1);
+		else
+			c = 0;
+		ans = max(ans, n - i + 1 + c);
+		// cout<<"i = "<<i<<" c = "<<c<<" ans = "<<ans<<endl;
+	}
+
 	cout<<ans<<endl;
 }
 void testCase()
