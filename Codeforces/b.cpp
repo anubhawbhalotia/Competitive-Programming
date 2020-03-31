@@ -5,10 +5,9 @@
 using namespace __gnu_pbds;
 using namespace std;
 typedef long long ll;
-typedef vector<bool> vi;
+typedef vector<int> vi;
 typedef vector<long long> vl;
-typedef vector<vector<bool>> vvi;
-typedef vector<vector<vector<bool>>> vvvi;
+typedef vector<vector<int>> vvi;
 typedef vector<vector<long long>> vvl;
 typedef pair<int,int> pt;
 typedef pair<long long ,long long> ptl;
@@ -50,40 +49,43 @@ auto operator+(const pair<T,U> & l, pair<V,W> & r)
 {                                                                                  
     return {l.first+r.first,l.second+r.second};                                    
 }
-template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}   
+template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}  
 int extendedEuclid(int a, int b, int *x, int *y){if(a == 0){*x = 0;*y = 1;
 	return b;}int x1, y1;int gcd = extendedEuclid(b % a, a, &x1, &y1);
 	*x = y1 - (b/a) * x1;*y = x1;return gcd;}
-void dp(vvvi &DP, int &n, vector<int>  &t, vector<int>  &w, int &ans, int x, int y, int z) //n, t, w
+void solution(int z)
 {
-	if(x == n)
-	{
-		if(y >= z)
-		{
-			DP[x][y][z] = 1;
-			ans = min(ans, y);
-		}
-		return;
-	}
-	if(z > 200)
-		return;
-	if(DP[x][y][z])
-		return ;
-	DP[x][y][z] = 1;
-	dp(DP, n, t, w, ans, x + 1, y + t[x], z);
-	dp(DP, n, t, w, ans, x + 1, y, z + w[x]);
-	return ;
-}
-void solution()
-{
-	int n;
+	int n, a, b, ans = INT_MAX;
+	vvi t(2);
+	vi w(2, 0);
 	cin>>n;
-	vector<int> t(n), w(n);
 	f(i, 0, n)
-		cin>>t[i]>>w[i];
-	vvvi DP(n + 1, vvi(n * 2 + 1, vi(201, 0)));
-	int ans = INT_MAX;
-	dp(DP, n, t, w, ans, 0, 0, 0);
+	{
+		cin>>a>>b;
+		t[a - 1].pb(b);
+		w[a - 1] += b;
+	}
+	sort(all(t[0]));
+	sort(all(t[1]));
+	b = w[0];
+	fre(i, t[0].size(), 0)
+	{
+		b = w[1];
+		fre(j, t[1].size(), 0)
+		{
+			if(((int)(t[0].size()) - i) + 2 * ((int)(t[1].size()) - j) >= 
+				w[0] + b)
+			{
+				ans = min(ans, ((int)t[0].size() - i) + 
+					2 * ((int)t[1].size() - j));
+				break;
+			}
+			if(j != 0)
+				b -= t[1][j - 1];
+		}
+		if(i != 0)
+			w[0] -= t[0][i - 1];
+	}
 	cout<<ans<<endl;
 }
 void testCase()
@@ -92,7 +94,7 @@ void testCase()
 	// cin>>t;
 	f(i, 0, t)
 	{
-		solution();
+		solution(i + 1);
 	}
 }
 int main()
