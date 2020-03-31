@@ -55,49 +55,38 @@ int extendedEuclid(int a, int b, int *x, int *y){if(a == 0){*x = 0;*y = 1;
 	*x = y1 - (b/a) * x1;*y = x1;return gcd;}
 void solution(int z)
 {
-	int n, a, b, w1 = 0, w2 = 0;
+	int n, a, b, ans = INT_MAX;
 	vvi t(2);
+	vi w(2, 0);
 	cin>>n;
 	f(i, 0, n)
 	{
 		cin>>a>>b;
-		if(a == 1)
-		{
-			t[0].pb(b);
-			w1 += b;
-		}
-		else
-		{
-			t[1].pb(b);
-			w2 += b;
-		}
+		t[a - 1].pb(b);
+		w[a - 1] += b;
 	}
 	sort(all(t[0]));
 	sort(all(t[1]));
-	a = w1;
-	b = w2;
-	int v1 = 0, v2 = 0, ans = INT_MAX;
+	b = w[0];
 	fre(i, t[0].size(), 0)
 	{
-		b = w2;
-		v2 = 0;
+		b = w[1];
 		fre(j, t[1].size(), 0)
 		{
-			if(v1 + 2*v2 >= a + b)
+			if(((int)(t[0].size()) - i) + 2 * ((int)(t[1].size()) - j) >= 
+				w[0] + b)
 			{
-				ans = min(ans, v1 + 2 * v2);
-				// break;
+				ans = min(ans, ((int)t[0].size() - i) + 
+					2 * ((int)t[1].size() - j));
+				break;
 			}
-			v2++;
 			if(j != 0)
 				b -= t[1][j - 1];
 		}
-		v1++;
 		if(i != 0)
-			a -= t[0][i - 1];
+			w[0] -= t[0][i - 1];
 	}
 	cout<<ans<<endl;
-
 }
 void testCase()
 {
