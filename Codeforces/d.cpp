@@ -53,99 +53,37 @@ template <typename T> T gcd(T a, T b) {return b == 0 ? a : gcd(b, a % b);}
 int extendedEuclid(int a, int b, int *x, int *y){if(a == 0){*x = 0;*y = 1;
 	return b;}int x1, y1;int gcd = extendedEuclid(b % a, a, &x1, &y1);
 	*x = y1 - (b/a) * x1;*y = x1;return gcd;}
-int bsl(vi &a, int l, int r, int val)
+void addVal(vi &a, int l, int r, int k)
 {
-	int m;
-	while(l < r)
-	{
-		m = (l + r) / 2;
-		if(a[m] >= val)
-		{
-			r = m;
-		}
-		else
-		{
-			l = m + 1;
-		}
-	}
-	return l;
-}
-int bsr(vi &a, int l, int r, int val)
-{
-	int m;
-	while(l < r)
-	{
-		m = (l + r) / 2 + 1;
-		if(a[m] <= val)
-		{
-			l = m;
-		}
-		else
-		{
-			r = m - 1;
-		}
-	}
-	if(a[l] <= val)
-		return l;
-	return a.size();
+	a[2] += 2;
+	a[2 * k + 1] -= 2;
+	a[l] -= 1;
+	a[r + 1] += 1;
 }
 void solution(int t)
 {
-	int n, k, z, x = 0, y, s = INT_MAX;
+	int n, k;
 	cin>>n>>k;
-	vi a(n), b, ans;
+	vi a(n);
 	f(i, 0, n)
 	{
 		cin>>a[i];
 	}
-	map <int, int> m;
+
+	vi m((2 * k) + 2, 0), c((2 * k) + 2, 0);
 	f(i, 0, n/2)
 	{
-		z = a[i] + a[n - i - 1];
-		if(m.find(z) == m.end())
-		{
-			m[z] = 0;
-		}
-		m[z]++;
+		m[a[i] + a[n - i - 1]]--;
+		addVal(c, min(a[i], a[n - i - 1]) + 1, 
+			max(a[i], a[n - i - 1]) + k, k);
 	}
-	for(auto i : m)
-	{
-		b.pb(i.x);
-		ans.pb(-i.y);
-	}
-	int d = b.size();
-	//cout<<"d  = "<<d<<endl;
-	vi c(d, 0);
-	int g = INT_MAX;
-	int h = INT_MIN;
-	f(i, 0, n / 2)
-	{
-		y = bsl(b, 0, d - 1, min(a[i], a[n - i - 1]) + 1); //will always find
-		g = min(g, min(a[i], a[n - i - 1]) + 1);
-		h = max(h, max(a[i], a[n - i - 1]) + k);
-		z = bsr(b, 0, d - 1, max(a[i], a[n - i - 1]) + k); //return b if not found
-		//cout<<"y = "<<y<<" z = "<<z<<endl;
-		c[0] += 2;
-		c[y] -= 2;
-		c[y] += 1;
-		if(z < d - 1)
-		{
-			//cout<<"yes"<<endl;
-			c[z + 1] -= 1;
-			c[z + 1] += 2;
-		}
-	}
-	z = 0;
-	f(i, 0, d)
+	int z = 0, s = INT_MAX;
+	f(i, 2, 2 * k + 1)
 	{
 		z += c[i];
-		//cout<<"z = "<<z<<endl;
-		ans[i] += z;
-		s = min(s, ans[i]);
-		//cout<<"s = "<<s<<endl;
+		m[i] += z;
+		s = min(s, m[i]);
 	}
-	if(g < h)
-		s = min(s, n / 2);
 	cout<<s<<endl;
 }
 void testCase()
