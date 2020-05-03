@@ -1,3 +1,5 @@
+// My editorial - https://codeforces.com/blog/entry/76555?#comment-614617
+
 #include <ext/pb_ds/assoc_container.hpp> 
 #include <ext/pb_ds/tree_policy.hpp>  
 #include <functional>
