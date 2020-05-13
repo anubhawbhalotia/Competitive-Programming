@@ -65,27 +65,11 @@ int solution(int tc)
 		cin>>a[i];
 	}
 	int g = 0;
-	vi pre(n), suff(n);
-	f(i, 0, n)
+	ll ans = 0;
+	fre(i, n - 2, 0)
 	{
-		g = gcd(g, a[i]);
-		pre[i] = g;
-	}
-	g = 0;
-	fre(i, n - 1, 0)
-	{
-		g = gcd(g, a[i]);
-		suff[i] = g;
-	}
-	ll ans = 1;
-	f(i, 0, n)
-	{
-		g = 0;
-		if(i > 0)
-			g = gcd(g, pre[i - 1]);
-		if(i < n - 1)
-			g = gcd(g, suff[i + 1]);
-		ans = lcm(ans, (ll)g);
+		g = gcd(g, a[i + 1]);
+		ans = gcd(ans, lcm(a[i], g));
 	}
 	cout<<ans<<endl;
 	return 1;
