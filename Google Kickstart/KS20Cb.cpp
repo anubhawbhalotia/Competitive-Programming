@@ -56,7 +56,7 @@ using indexed_set = tree<T, null_type, less<T>,
 #define min3(a, b, c) min(a, min(b, c))
 const int MOD = 998244353;  
 int dx[] = {-1, 0, 1, 0} , dy[] = {0, 1, 0, -1};
-int buildGraph(vs &a, mpti &m, int &r, int &c)
+int buildGraph(vs &a, vector<pair<int, pt>> &m, int &r, int &c)
 {
 	vvb flag(r, vb(c, 0));
 	vb b(120, 0);
@@ -77,7 +77,8 @@ int buildGraph(vs &a, mpti &m, int &r, int &c)
 				{
 					if(a[i + 1][j] != val)
 					{
-						m[{val, a[i + 1][j]}] = 1;
+						m.pb({1, {val - 65, a[i + 1][j] - 65}});
+						// m[{val, a[i + 1][j]}] = 1;
 					}
 				}
 				while(!q.empty())
@@ -98,7 +99,8 @@ int buildGraph(vs &a, mpti &m, int &r, int &c)
 								{
 									if(a[x + 1][y] != val)
 									{
-										m[{val, a[x + 1][y]}] = 1;
+										m.pb({1, {val - 65, a[x + 1][y] - 65}});
+										// m[{val, a[x + 1][y]}] = 1;
 									}
 								}
 							}
@@ -110,68 +112,98 @@ int buildGraph(vs &a, mpti &m, int &r, int &c)
 	}
 	return 1;
 }
-int dfs(char x, int d, mpti &m, vi &flag, string &ans)
+class TopologicalOrdering
 {
-	flag[x] = d;
-	for(char i = 'A'; i <= 'Z'; i++)
+private:
+	int dfs(int currNode, int &marker, vector<vpt> &adj, vi &flag, stack<int> &s)
 	{
-		if(m[{x, i}] == 1)
+		flag[currNode] = marker;
+		for(auto i : adj[currNode])
+		{
+			if(flag[i.X] == 0)
+			{
+				if(dfs(i.X, marker, adj, flag, s) == 0)
+					return 0;
+			}
+			else if(flag[i.X] == marker)
+				return 0;
+		}
+		flag[currNode] = 1;
+		s.push(currNode);
+		return 1;
+	}
+public:
+	vi getTopologicalOrderingFromAdj(vector<vpt> &adj)
+	{
+		// given adjacency list, returns topological order 
+		// returns empty vector if not DAG
+		int n = adj.size();
+		int marker = 1;
+		vi ans;
+		vi flag(n, 0);
+		stack <int> s;
+		f(i, 0, n)
 		{
 			if(flag[i] == 0)
 			{
-				if(dfs(i, d, m, flag, ans) == 0)
-					return 0;
+				if(dfs(i, ++marker, adj, flag, s) == 0)
+				{
+					return ans;
+				}
 			}
-			else if(flag[i] == d)
-				return 0;
 		}
+		while(!s.empty())
+		{
+			ans.pb(s.top());
+			s.pop();
+		}
+		return ans;
 	}
-	flag[x] = 1;
-	ans += x;
-	return 1;
+};
+vector<vpt> buildAdjFromEdgeList(vector<pair<int, pt>> &e, int n)
+{
+	vector<vpt> adj(n);
+	for(auto i : e)
+	{
+		adj[i.Y.X].pb({i.Y.Y, i.X});
+		// adj[i.Y.Y].pb({i.Y.X, i.X});
+	}
+	return adj;
 }
 string solution(int tc)
 {
 	int r, c;
 	cin>>r>>c;
 	vs a(r);
-	vb p(120 , 0);
+	vb p(26 , 0);
 	int count = 0;
 	f(i, 0, r)
 	{
 		cin>>a[i];
 		for(auto j : a[i])
 		{
-			if(p[j] == 0)
+			if(p[j - 65] == 0)
 			{
-				count++;
-				p[j] = 1;
+				p[j - 65] = 1;
 			}
 		}
 	}
-	mpti m;
+	vector<pair<int, pt>> m;
 	if(buildGraph(a, m, r, c))
 	{
-		vi in(120, 0);
-		for(auto i : m)
-		{
-			in[i.X.Y]++;
-		}
-		vi flag(120, 0);
-		int d = 1;
+		vector<vpt> adj = buildAdjFromEdgeList(m, 26);
+		TopologicalOrdering t;
+		vi ord = t.getTopologicalOrderingFromAdj(adj);
+		if(ord.size() == 0)
+			return "-1";
 		string ans = "";
-		for(int i = 'A'; i <= 'Z'; i++)
+		fre(i, ord.size() - 1, 0)
 		{
-			if(in[i] == 0 && p[i] == 1)
+			if(p[ord[i]] == 1)
 			{
-				d++;
-				if(dfs(i, d, m, flag, ans) == 0)
-					return "-1";
+				ans += (ord[i] + 65);
 			}
 		}
-
-		if(ans.length() < count)
-			return "-1";
 		return ans;
 	}
 	else
