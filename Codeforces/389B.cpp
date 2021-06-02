@@ -5,20 +5,37 @@ using namespace std;
 #define fr(i,s,n) for(int i = s; i > n; i--)
 #define fre(i,s,n) for(int i = s; i >= n; i--)
 int solution(int tc) {
-    int n, a, b, c, d = 0, e = 0, f = 0;
+    int n;
     cin>>n;
-    f(i, 0, n) {
-        cin>>a>>b>>c;
-        d += a;
-        e += b;
-        f += c;
+    vector<string> a(n);
+    f(i,0, n) {
+        cin>>a[i];
     }
-    if (d == 0 && e == 0 && f == 0) {
+    f(i, 1, n - 1) {
+        f(j, 1, n - 1) {
+            if(a[i][j] == '#' && a[i - 1][j] == '#' && a[i + 1][j] == '#' && a[i][j - 1] == '#' & a[i][j + 1] == '#') {
+                a[i][j] = '.';
+                a[i-1][j] = '.';
+                a[i+1][j] = '.';
+                a[i][j-1] = '.';
+                a[i][j+1] = '.';
+            } 
+        }
+    }
+    bool ans = true;
+    f(i, 0, n) {
+        f(j, 0, n) {
+            if (a[i][j] == '#') {
+                ans = false;
+                break;
+            }
+        }
+    }
+    if (ans) {
         cout<<"YES"<<endl;
     } else {
         cout<<"NO"<<endl;
     }
-
     return 1;
 }
 void testCase() {

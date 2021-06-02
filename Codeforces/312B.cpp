@@ -5,20 +5,11 @@ using namespace std;
 #define fr(i,s,n) for(int i = s; i > n; i--)
 #define fre(i,s,n) for(int i = s; i >= n; i--)
 int solution(int tc) {
-    int n, a, b, c, d = 0, e = 0, f = 0;
-    cin>>n;
-    f(i, 0, n) {
-        cin>>a>>b>>c;
-        d += a;
-        e += b;
-        f += c;
-    }
-    if (d == 0 && e == 0 && f == 0) {
-        cout<<"YES"<<endl;
-    } else {
-        cout<<"NO"<<endl;
-    }
-
+    double a, b, c, d;
+    cin>>a>>b>>c>>d;
+    double ans = 1 / (1 - ((b-a)*(d-c)/(b*d)));
+    ans *= (a/b);
+    cout<<ans<<endl;
     return 1;
 }
 void testCase() {

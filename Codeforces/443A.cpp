@@ -5,20 +5,21 @@ using namespace std;
 #define fr(i,s,n) for(int i = s; i > n; i--)
 #define fre(i,s,n) for(int i = s; i >= n; i--)
 int solution(int tc) {
-    int n, a, b, c, d = 0, e = 0, f = 0;
-    cin>>n;
-    f(i, 0, n) {
-        cin>>a>>b>>c;
-        d += a;
-        e += b;
-        f += c;
+    string a;
+    getline(cin, a);
+    // cout<<a<<endl;
+    int ans = 0;
+    // 1, 4, 7
+    // cout<<a.length()<<endl;
+    vector<bool> c(300, false);
+    for (int i = 1; i < a.length() && a.length() > 2; i += 3) {
+        // cout<<a[i]<<endl;
+        if (c[a[i]] == false) {
+            c[a[i]] = true;
+            ans++;
+        }
     }
-    if (d == 0 && e == 0 && f == 0) {
-        cout<<"YES"<<endl;
-    } else {
-        cout<<"NO"<<endl;
-    }
-
+    cout<<ans<<endl;
     return 1;
 }
 void testCase() {

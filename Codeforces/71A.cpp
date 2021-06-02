@@ -4,21 +4,31 @@ using namespace std;
 #define fe(i,s,n) for(int i = s; i <= n; i++)
 #define fr(i,s,n) for(int i = s; i > n; i--)
 #define fre(i,s,n) for(int i = s; i >= n; i--)
+string itoa_custom(int a) {
+    string ans = "";
+    while(a) {
+        ans += ((a % 10) + '0');
+        a /= 10;
+    }
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
 int solution(int tc) {
-    int n, a, b, c, d = 0, e = 0, f = 0;
+    int n;
     cin>>n;
+    string a;
+    vector<string> b;
     f(i, 0, n) {
-        cin>>a>>b>>c;
-        d += a;
-        e += b;
-        f += c;
+        cin>>a;
+        if (a.length() <= 10) {
+            b.push_back(a);
+        } else {
+            b.push_back(a[0] + itoa_custom((int)a.length() - 2) + a[a.length() - 1]);
+        }
     }
-    if (d == 0 && e == 0 && f == 0) {
-        cout<<"YES"<<endl;
-    } else {
-        cout<<"NO"<<endl;
+    f(i, 0, b.size()) {
+        cout<<b[i]<<endl;
     }
-
     return 1;
 }
 void testCase() {
